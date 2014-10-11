@@ -1,9 +1,14 @@
 angular
   .module('acre.page', [])
-  .constant('title', 'Acre CMS')
-  .factory('createPage', function ($http) {
+  .value('title', 'Acre CMS')
+  .factory('splitTag', function () {
+    return function (input) {
+      return input.split(/\,?\s/); 
+    };
+  })
+  .factory('createPage', function ($http, splitTag) {
     return function (page) {
-      page.tag = page.tag.split(/\,|\,\s/);
+      page.tag = splitTag(page.tag);
 
       return $http({
         url: 'http://localhost:4000/api/page',
