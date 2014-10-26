@@ -17,15 +17,53 @@ angular
       });
     };
   })
-  .controller('CreatePageCtrl', function ($scope, createPage, title, $log) {
-    $scope.title = title;
-    $scope.page = {};
+  .factory('listPage', function ($http) {
+    return function () {
+      return $http({
+        url: 'http://localhost:4000/api/page',
+        method: 'GET',
+      });
+    };
+  })
+  .factory('removePage', function ($http) {
+    return function (id) {
+      return $http({
+        url: 'http://localhost:4000/api/page/' + id,
+        method: 'DELETE',
+      });
+    };
+  })
+  .controller('CreatePageCtrl', function (createPage, title, $log) {
+    this.title = title;
+    this.page = {};
     function savePage(page) {
       createPage(page).success(function (data) {
         $log.debug(data);
+        this.page = {};
       });
     }
-    $scope.savePage = savePage;
+    this.savePage = savePage;
+  })
+  .controller('ListPageCtrl', function (listPage, removePage, $log, $scope) {
+    $scope.pages = [];
+    listPage().success(function (data) {
+      $scope.pages = data.result;
+    });
+    this.listPages = function () {
+      listPage().success(function (data) {
+        $scope.pages = data.result;
+      });
+    };
+    this.removePage = function (id, idx) {
+      removePage(id).success(function (data) {
+        function _pagesFilterHandler(item, i) {
+          if (i !== idx) {
+            return item;
+          }
+        }
+        $scope.pages = $scope.pages.filter(_pagesFilterHandler);
+      });
+    };
   })
   .run(function ($log) {
     $log.debug('Acre page started!');

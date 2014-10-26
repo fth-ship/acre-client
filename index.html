@@ -5,17 +5,25 @@
   <title>Acre cms</title>
 </head>
 <body>
-  <div class="container" ng-controller='CreatePageCtrl'>
-    <h1>{{title}}</h1>
-    <form ng-submit='savePage(page)'>
-     <input type="text" ng-model='page.title'>
+  <div class="container" ng-controller='CreatePageCtrl as vm'>
+    <h1>{{vm.title}}</h1>
+    <form ng-submit='vm.savePage(vm.page)'>
+     <input type="text" ng-model='vm.page.title'>
      <br>
-     <textarea cols="30" rows="10" ng-model='page.body'></textarea>
+     <textarea cols="30" rows="10" ng-model='vm.page.body'></textarea>
      <br>
-     <input type="text" ng-model='page.tag'>
+     <input type="text" ng-model='vm.page.tag'>
      <br>
      <button>Salvar</button>
     </form>
+  </div>
+
+  <div class="container" ng-controller='ListPageCtrl as vm'>
+    <h2>Listagem</h2>
+    <button ng-click='vm.listPages()'>Atualizar</button>
+    <ul>
+      <li ng-repeat='page in pages'>{{page.title}} <button ng-click='vm.removePage(page._id, $index)'>X</button> </li>
+    </ul>
   </div>
 
   <script src='bower_components/angular/angular.min.js'></script>
